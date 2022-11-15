@@ -11,6 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _controller = TextEditingController();
 
   String _result = 'Resultado';
@@ -42,40 +43,55 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           title: const Text('Consumo de api'),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset('assets/images/search.png',
-                  width: MediaQuery.of(context).size.width * .6,
-                  height: MediaQuery.of(context).size.height * .2),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextField(
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                    labelText: 'Digite o cep, formato 00000000'),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset('assets/images/search.png',
+                    width: MediaQuery.of(context).size.width * .6,
+                    height: MediaQuery.of(context).size.height * .2),
               ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            ElevatedButton(
-              onPressed: _recoverCep,
-              child: const Text('Recuperar Cep'),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextFormField(
+                  controller: _controller,
+                  keyboardType: TextInputType.number,
+                  validator: (text) {
+                    if (text == null || text.isEmpty) {
+                      return 'Texto não pode ser vazio';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                      labelText: 'Digite o cep, formato 00000000'),
+                ),
               ),
-              child: Text(_result),
-            ),
-          ],
+              const SizedBox(
+                height: 8,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _recoverCep();
+                  }
+                },
+                child: const Text('Recuperar Cep'),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(_result),
+                ),
+              ),
+            ],
+          ),
         ));
   }
 }
